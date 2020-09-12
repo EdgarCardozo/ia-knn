@@ -28,8 +28,6 @@ public class KnnController {
     this.knnService = knnService;
   }
 
-  // TODO add values validators
-  //  Must be positives values, and kValue must be less than database size.
   @GetMapping(value = "/calculate")
   public HttpEntity<List<Element>> calculateNeighbours(
       @RequestParam @Min(0) Double xValue,

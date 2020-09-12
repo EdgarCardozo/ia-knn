@@ -14,6 +14,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class KnnCalculator {
 
+  /** Principal method to calculate the K-nearest neighbours.
+   * @param elementsList All the neighbours used to filter by distance.
+   * @param element Element to find its neighbours.
+   * @param kValue Number of neighbours.
+   * @return A list with the K-nearest neighbours.
+   */
   public List<Element> getNeighbours(List<Element> elementsList, Element element, Integer kValue) {
     List<ElementDistance> elementDistance = new ArrayList<>();
 
@@ -29,6 +35,11 @@ public class KnnCalculator {
             kValue);
   }
 
+  /** Method that returns the k first elements of a given list.
+   * @param distances List of ordered elements to
+   * @param kValue Number of elements wanted.
+   * @return List of the first k elements.
+   */
   private List<Element> getKFirstResults(List<ElementDistance> distances, Integer kValue) {
     List<Element> firstResults = new ArrayList<>();
     for (int i = 0; i < kValue || distances.size() < kValue; i++) {
@@ -37,6 +48,11 @@ public class KnnCalculator {
     return firstResults;
   }
 
+  /** Method that calculates a 2 dimension distance between two elements.
+   * @param elementI First element.
+   * @param elementJ Second element.
+   * @return The distance.
+   */
   private double calculateDistances(Element elementI, Element elementJ) {
     return sqrt(pow((elementI.getXValue() - elementJ.getXValue()),2) +
         pow(elementI.getYValue() - elementJ.getYValue(),2));
