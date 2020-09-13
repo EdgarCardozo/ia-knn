@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ia-knn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ia-knn
+  template:
+    metadata:
+      labels:
+        app: ia-knn
+    spec:
+      containers:
+      - name: app
+        image: edgarcardozo/ia-knn:latest
+        ports:
+          - containerPort: 8080
+        env:
+        - name: MYSQL_HOST
+          value: "mysql-svc"
+        - name: MYSQL_PORT
+          value: "3306"
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret-text
+              key: user
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret-text
+              key: password
+        imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ia-knn
+spec:
+  selector:
+    app: ia-knn
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: LoadBalancer
