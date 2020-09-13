@@ -1,0 +1,6 @@
+name: ia-knn
+image: edgarcardozo/ia-knn:latest
+command: [ "gradle", "bootRun" ]
+workdir: /code
+forward:
+  - 8080:8080

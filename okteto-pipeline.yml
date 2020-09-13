@@ -1,0 +1,5 @@
+deploy:
+  - okteto build -t edgarcardozo/ia-knn:latest api
+  - kubectl apply -f kube
+devs:
+  - okteto.yml
