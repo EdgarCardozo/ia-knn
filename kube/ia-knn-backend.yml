@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: edgarcardozo/ia-knn:latest
+        image: https://registry.hub.docker.com/v1/edgarcardozo/ia-knn:latest
         ports:
           - containerPort: 8080
         env:
