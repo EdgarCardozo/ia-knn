@@ -1,6 +1,4 @@
 deploy:
-  - okteto build -t edgarcardozo/ia-knn:latest -f Dockerfile
   - kubectl apply -f kube
 devs:
   - okteto.yml
-  - Dockerfile
