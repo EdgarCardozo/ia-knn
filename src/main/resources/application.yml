@@ -4,6 +4,13 @@ server:
   servlet:
     context-path: /api/${name}/v1
 
+swagger:
+  title: "K-NN API"
+  description: "IA K-Nearest Neighbours API"
+  version: 1.0.0
+  contact:
+    email: "edgar07cardozo@gmail.com"
+
 spring:
   datasource:
     url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/knn?autoReconnect=true&useUnicode=yes&createDatabaseIfNotExist=true

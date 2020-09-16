@@ -1,4 +1,7 @@
 deploy:
+  - docker login --username ${DOCKER_USER} --password ${DOCKER_PSW}
+  - docker build . --file Dockerfile --tag registry.hub.docker.com/edgarcardozo/ia-knn:latest
+  - docker push registry.hub.docker.com/edgarcardozo/ia-knn:${VERSION}
   - kubectl create secret generic mysql-secret-text --from-literal=user=user --from-literal=password=password
   - kubectl apply -f kube
 devs:
