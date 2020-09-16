@@ -1,5 +1,5 @@
 deploy:
-  - okteto login --username ${DOCKER_USER} --password ${DOCKER_PSW}
+  - okteto login registry.hub.docker.com --username ${DOCKER_USER} --password ${DOCKER_PSW}
   - okteto build . --file Dockerfile --tag registry.hub.docker.com/edgarcardozo/ia-knn:latest
   - okteto push registry.hub.docker.com/edgarcardozo/ia-knn:${VERSION}
   - kubectl create secret generic mysql-secret-text --from-literal=user=user --from-literal=password=password
