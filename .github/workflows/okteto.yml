@@ -26,7 +26,7 @@ jobs:
       uses: okteto/apply@master
       with:
         namespace: edgarcardozo
-        manifest: okteto-pipeline.yml
+        manifest: kube
 
     - name: "Push changes"
       uses: okteto/push@master
