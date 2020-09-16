@@ -1,0 +1,35 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: okteto/login@master
+      with:
+        token: ${{ secrets.OKTETO_TOKEN }}
+    
+    - name: "Activate Namespace"
+      uses: okteto/namespace@master
+      with:
+        name: edgarcardozo
+    
+    - name: "Deploy application"
+      uses: okteto/apply@master
+      with:
+        namespace: edgarcardozo
+        manifest: k8s.yaml
+
+    - name: "Push changes"
+      uses: okteto/push@master
+      with:
+        namespace: edgarcardozo
+        name: ia-knn
