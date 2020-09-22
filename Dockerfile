@@ -8,4 +8,3 @@ EXPOSE 8080
 WORKDIR /app
 COPY --from=builder /code/build/libs/*.jar .
 CMD java -jar *.jar
-#TODO Habilitar permisos para subir la imagen con okteto

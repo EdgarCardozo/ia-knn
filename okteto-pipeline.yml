@@ -1,4 +1,0 @@
-deploy:
-  - kubectl apply -f kube
-devs:
-  - okteto.yml
