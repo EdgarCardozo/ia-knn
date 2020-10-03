@@ -7,4 +7,4 @@ FROM adoptopenjdk/openjdk11:jdk-11.0.2.9-slim
 EXPOSE 8080
 WORKDIR /app
 COPY --from=builder /code/build/libs/*.jar .
-CMD java -jar *.jar
+CMD java $JAVA_OPTS -Dserver.port=$PORT -jar *.jar

@@ -1,6 +1,7 @@
 name: ia-knn
 
 server:
+  port: ${PORT:8080}
   servlet:
     context-path: /api/${name}/v1
 
