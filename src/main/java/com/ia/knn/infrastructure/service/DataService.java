@@ -9,4 +9,6 @@ public interface DataService {
   List<ElementResponse> getAllData();
 
   List<ElementResponse> bulkDataUpload(List<ElementRequest> elements);
+
+  void deleteAll();
 }

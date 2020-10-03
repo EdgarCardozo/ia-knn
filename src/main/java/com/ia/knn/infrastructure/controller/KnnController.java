@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.validation.ConstraintViolationException;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -14,11 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController(value = "knn")
+@RestController
+@RequestMapping(value = "knn")
 @Validated
 public class KnnController {
 
@@ -32,7 +33,7 @@ public class KnnController {
   public HttpEntity<List<Element>> calculateNeighbours(
       @RequestParam @Min(0) Double xValue,
       @RequestParam @Min(0) Double yValue,
-      @RequestParam @Min(1) @Max(9) Integer kValue
+      @RequestParam @Min(1) Integer kValue
   ) {
     return ResponseEntity.ok(knnService.calculateNeighbours(xValue,
         yValue,

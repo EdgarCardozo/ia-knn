@@ -30,15 +30,19 @@ public class DefaultDataService implements DataService {
     List<Element> elementList = new ArrayList<>();
     for (ElementRequest elementRequest : elements) {
       elementList.add(
-        Element.builder()
-          .xValue(elementRequest.getXValue())
-          .yValue(elementRequest.getYValue())
-          .result((elementRequest.getResult()))
-          .build());
+          Element.builder()
+              .xValue(elementRequest.getXValue())
+              .yValue(elementRequest.getYValue())
+              .result((elementRequest.getResult()))
+              .build());
     }
     List<ElementResponse> responses = new ArrayList<>();
     elementRepository.saveAll(elementList)
         .forEach(element -> responses.add(ElementResponse.from(element)));
     return responses;
+  }
+
+  public void deleteAll() {
+    elementRepository.deleteAll();
   }
 }
