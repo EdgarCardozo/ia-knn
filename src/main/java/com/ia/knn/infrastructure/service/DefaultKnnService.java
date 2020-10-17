@@ -34,8 +34,9 @@ public class DefaultKnnService implements KnnService {
     Collections.shuffle(elements);
 
     // Divides into training elements and testing elements
-    List<Element> trainElements = elements.subList(0, Integer.parseInt(String.valueOf(elements.size() * PERCENTAGE)));
-    List<Element> testElements = elements.subList(Integer.parseInt(String.valueOf(elements.size() * PERCENTAGE)), elements.size());
+    int divisor = (int) (elements.size() * PERCENTAGE);
+    List<Element> trainElements = elements.subList(0, divisor);
+    List<Element> testElements = elements.subList(divisor, elements.size());
 
     // Obtains grid limits
     Limits limits = getLimits(elements);
@@ -140,7 +141,7 @@ public class DefaultKnnService implements KnnService {
     List<Element> gridElements = new ArrayList<>();
 
     double hForX = (limits.getXMax() - limits.getXMin()) / xDivision;
-    double hForY = (limits.getXMax() - limits.getXMin()) / yDivision;
+    double hForY = (limits.getYMax() - limits.getYMin()) / yDivision;
 
     for (int i = 0; i < xDivision; i++) {
       double xIncrement = limits.getXMin() + i * hForX;
