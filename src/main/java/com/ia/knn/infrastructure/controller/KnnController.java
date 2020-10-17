@@ -31,7 +31,7 @@ public class KnnController {
           @RequestParam @Min(1) Integer kValue,
           @RequestBody @NotNull List<Element> gridElements
   ) {
-    return ResponseEntity.ok(knnService.buildCalculatedGrid(
+    return ResponseEntity.ok(knnService.buildGrid(
             gridElements,
             kValue));
   }
@@ -43,7 +43,7 @@ public class KnnController {
           @RequestParam @Min(1) Integer yDivision,
           @RequestBody @NotNull List<Element> gridElements
   ) {
-    return ResponseEntity.ok(knnService.buildCalculatedGrid(
+    return ResponseEntity.ok(knnService.buildGrid(
             gridElements,
             kValue,
             xDivision,

@@ -25,56 +25,49 @@ public class DefaultKnnService implements KnnService {
 
   /**
    *  Default grid Knn Calculator.
-   * @param elements complete data set to calculate the grid.
+   * @param dataSet complete data set to calculate the grid.
    * @param kValue numbers of neighbours to consider.
    * @return GridMapping that is used to build the graphic.
    */
-  public GridMapping  buildCalculatedGrid(List<Element> elements, Integer kValue) {
-    // Mix List
-    Collections.shuffle(elements);
-
-    // Divides into training elements and testing elements
-    int divisor = (int) (elements.size() * PERCENTAGE);
-    List<Element> trainElements = elements.subList(0, divisor);
-    List<Element> testElements = elements.subList(divisor, elements.size());
-
+  public GridMapping buildGrid(List<Element> dataSet, Integer kValue) {
     // Obtains grid limits
-    Limits limits = getLimits(elements);
+    Limits limits = getLimits(dataSet);
+    List<Element> grid = buildGrid(limits);
 
-    // Calculates grid with class type
-    List<Element> gridCalculated = knnGrid(buildGrid(limits), trainElements, kValue);
-
-    return GridMapping.builder()
-            .gridElements(gridCalculated)
-            .testElements(testElements)
-            .build();
+    return calculateGrid(dataSet, grid, kValue);
   }
 
   /** Overload.
    *  Custom Grid Builder.
    *
-   * @param elements complete data set to calculate the grid.
+   * @param dataSet complete data set to calculate the grid.
    * @param kValue numbers of neighbours to consider.
    * @param xDivision Number of division on x axis.
    * @param yDivision Number of division on y axis.
    * @return GridMapping that is used to build the graphic.
    */
-  public GridMapping buildCalculatedGrid(List<Element> elements, Integer kValue, Integer xDivision, Integer yDivision) {
+  public GridMapping buildGrid(List<Element> dataSet, Integer kValue, Integer xDivision, Integer yDivision) {
+    // Obtains grid limits
+    Limits limits = getLimits(dataSet);
+    List<Element> grid = buildGrid(limits, xDivision, yDivision);
+
+    return calculateGrid(dataSet, grid, kValue);
+  }
+
+  private GridMapping calculateGrid(List<Element> dataSet, List<Element> grid, Integer kValue) {
     // Mix List
-    Collections.shuffle(elements);
+    Collections.shuffle(dataSet);
 
     // Divides into training elements and testing elements
-    List<Element> trainElements = elements.subList(0, Integer.parseInt(String.valueOf(elements.size() * PERCENTAGE)));
-    List<Element> testElements = elements.subList(Integer.parseInt(String.valueOf(elements.size() * PERCENTAGE)), elements.size());
-
-    // Obtains grid limits
-    Limits limits = getLimits(elements);
+    int splitIndex = (int) (dataSet.size() * PERCENTAGE);
+    List<Element> trainElements = dataSet.subList(0, splitIndex);
+    List<Element> testElements = dataSet.subList(splitIndex, dataSet.size());
 
     // Calculates grid with class type
-    List<Element> gridCalculated = knnGrid(buildGrid(limits, xDivision, yDivision), trainElements, kValue);
+    List<Element> trainedGrid = trainGrid(grid, trainElements, kValue);
 
     return GridMapping.builder()
-            .gridElements(gridCalculated)
+            .gridElements(trainedGrid)
             .testElements(testElements)
             .build();
   }
@@ -86,12 +79,11 @@ public class DefaultKnnService implements KnnService {
    * @param kValue number of neighbours.
    * @return Calculated Grid.
    */
-  private List<Element> knnGrid(List<Element> gridElements, List<Element> trainElements, Integer kValue) {
-    return gridElements.stream()
-            .map(element ->
-                    selectBestFitNeighbour(knnCalculator.getNeighbours(trainElements, element, kValue)))
-            .collect(Collectors.toList());
-
+  private List<Element> trainGrid(List<Element> gridElements, List<Element> trainElements, Integer kValue) {
+    for (Element element : gridElements) {
+      element.setClase(selectBestFitNeighbour(knnCalculator.getNeighbours(trainElements, element, kValue)).getClase());
+    }
+    return gridElements;
   }
 
   /**
@@ -111,22 +103,7 @@ public class DefaultKnnService implements KnnService {
    * @return 2 dimension Grid without class type.
    */
   private List<Element> buildGrid(Limits limits) {
-    List<Element> gridElements = new ArrayList<>();
-    double hForX = (limits.getXMax() - limits.getXMin()) / DEFAULT_GRID_DIVISION;
-    double hForY = (limits.getXMax() - limits.getXMin()) / DEFAULT_GRID_DIVISION;
-
-    for (int i = 0; i < DEFAULT_GRID_DIVISION; i++) {
-      double xIncrement = limits.getXMin() + i * hForX;
-
-      for (int j = 0; j < DEFAULT_GRID_DIVISION; j++) {
-        Element element = Element.builder()
-                .xValue(xIncrement)
-                .yValue(limits.getYMin() + j * hForY)
-                .build();
-        gridElements.add(element);
-      }
-    }
-    return gridElements;
+    return buildGrid(limits, DEFAULT_GRID_DIVISION, DEFAULT_GRID_DIVISION);
   }
 
   /** Overload.
@@ -177,6 +154,7 @@ public class DefaultKnnService implements KnnService {
     double yMax = elements.stream()
             .max(Comparator.comparing(Element::getXValue)).orElseThrow(RuntimeException::new)
             .getYValue();
+
     return Limits.builder()
             .xMin(xMin)
             .yMin(yMin)
