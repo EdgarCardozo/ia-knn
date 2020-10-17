@@ -1,25 +1,22 @@
 package com.ia.knn.infrastructure.controller;
 
-import com.ia.knn.domain.entity.Element;
+import com.ia.knn.infrastructure.dto.Element;
+import com.ia.knn.infrastructure.dto.GridMapping;
 import com.ia.knn.infrastructure.service.KnnService;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.validation.ConstraintViolationException;
-import javax.validation.constraints.Min;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.ConstraintViolationException;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping(value = "knn")
+@RequestMapping(value = "/knn")
 @Validated
 public class KnnController {
 
@@ -29,15 +26,28 @@ public class KnnController {
     this.knnService = knnService;
   }
 
-  @GetMapping(value = "/calculate")
-  public HttpEntity<List<Element>> calculateNeighbours(
-      @RequestParam @Min(0) Double xValue,
-      @RequestParam @Min(0) Double yValue,
-      @RequestParam @Min(1) Integer kValue
+  @PostMapping(value = "/calculate-grid/default")
+  public ResponseEntity<GridMapping> calculateGrid(
+          @RequestParam @Min(1) Integer kValue,
+          @RequestBody @NotNull List<Element> gridElements
   ) {
-    return ResponseEntity.ok(knnService.calculateNeighbours(xValue,
-        yValue,
-        kValue));
+    return ResponseEntity.ok(knnService.buildCalculatedGrid(
+            gridElements,
+            kValue));
+  }
+
+  @PostMapping(value = "/calculate-grid")
+  public ResponseEntity<GridMapping> calculateGrid(
+          @RequestParam @Min(1) Integer kValue,
+          @RequestParam @Min(1) Integer xDivision,
+          @RequestParam @Min(1) Integer yDivision,
+          @RequestBody @NotNull List<Element> gridElements
+  ) {
+    return ResponseEntity.ok(knnService.buildCalculatedGrid(
+            gridElements,
+            kValue,
+            xDivision,
+            yDivision));
   }
 
   @ExceptionHandler(ConstraintViolationException.class)

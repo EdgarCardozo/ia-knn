@@ -3,12 +3,12 @@ package com.ia.knn.domain.calculator;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
-import com.ia.knn.domain.entity.Element;
 import com.ia.knn.domain.utils.ElementDistance;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.ia.knn.infrastructure.dto.Element;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,19 +23,14 @@ public class KnnCalculator {
    * @return A list with the K-nearest neighbours.
    */
   public List<Element> getNeighbours(List<Element> elementsList, Element element, Integer kValue) {
-    List<ElementDistance> elementDistance = new ArrayList<>();
+    List<ElementDistance> elementDistance = elementsList.stream()
+            .map(candidate ->
+              ElementDistance.builder()
+                  .distance(calculateDistances(candidate, element))
+                  .element(candidate).build())
+            .collect(Collectors.toList());
 
-    elementsList.forEach(candidate ->
-        elementDistance.add(
-            ElementDistance.builder()
-                .distance(calculateDistances(candidate, element))
-                .element(candidate).build()));
-
-    return getKFirstResults(
-        elementDistance.parallelStream()
-            .sorted(Comparator.comparing(ElementDistance::getDistance))
-            .collect(Collectors.toList()),
-        kValue);
+    return getKFirstResults(elementDistance, kValue);
   }
 
   /**
@@ -46,11 +41,11 @@ public class KnnCalculator {
    * @return List of the first k elements.
    */
   private List<Element> getKFirstResults(List<ElementDistance> distances, Integer kValue) {
-    List<Element> firstResults = new ArrayList<>();
-    for (int i = 0; i < kValue || distances.size() < kValue; i++) {
-      firstResults.add(distances.get(i).getElement());
-    }
-    return firstResults;
+    return distances.parallelStream()
+            .sorted(Comparator.comparing(ElementDistance::getDistance))
+            .limit(kValue)
+            .map(ElementDistance::getElement)
+            .collect(Collectors.toList());
   }
 
   /**
