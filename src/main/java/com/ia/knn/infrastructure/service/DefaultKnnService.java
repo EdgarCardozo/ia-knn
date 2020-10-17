@@ -4,11 +4,12 @@ import com.ia.knn.domain.calculator.KnnCalculator;
 import com.ia.knn.domain.utils.Limits;
 import com.ia.knn.infrastructure.dto.Element;
 import com.ia.knn.infrastructure.dto.GridMapping;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 public class DefaultKnnService implements KnnService {
@@ -81,19 +82,9 @@ public class DefaultKnnService implements KnnService {
    */
   private List<Element> trainGrid(List<Element> gridElements, List<Element> trainElements, Integer kValue) {
     for (Element element : gridElements) {
-      element.setClase(selectBestFitNeighbour(knnCalculator.getNeighbours(trainElements, element, kValue)).getClase());
+      element.setClase(knnCalculator.calculateNeighbours(trainElements, element, kValue));
     }
     return gridElements;
-  }
-
-  /**
-   * Given List of elements Neighbours, it selects the best fit Neighbour.
-   *
-   * @param neighbours List of neighbours.
-   * @return Best Fit Neighbour.
-   */
-  private Element selectBestFitNeighbour(List<Element> neighbours) {
-    return neighbours.get(0);
   }
 
   /**

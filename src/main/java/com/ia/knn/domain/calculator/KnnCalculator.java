@@ -1,15 +1,16 @@
 package com.ia.knn.domain.calculator;
 
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
-
 import com.ia.knn.domain.utils.ElementDistance;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.ia.knn.infrastructure.dto.Element;
 import org.springframework.stereotype.Service;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 
 @Service
 public class KnnCalculator {
@@ -22,7 +23,7 @@ public class KnnCalculator {
    * @param kValue       Number of neighbours.
    * @return A list with the K-nearest neighbours.
    */
-  public List<Element> getNeighbours(List<Element> elementsList, Element element, Integer kValue) {
+  public String calculateNeighbours(List<Element> elementsList, Element element, Integer kValue) {
     List<ElementDistance> elementDistance = elementsList.stream()
             .map(candidate ->
               ElementDistance.builder()
@@ -30,7 +31,18 @@ public class KnnCalculator {
                   .element(candidate).build())
             .collect(Collectors.toList());
 
-    return getKFirstResults(elementDistance, kValue);
+    return selectBestFitClass(getKFirstResults(elementDistance, kValue));
+  }
+
+  private String selectBestFitClass(List<Element> kFirstResults) {
+    List<String> classes = kFirstResults.stream().map(Element::getClase).collect(Collectors.toList());
+    return classes.stream()
+            .collect(Collectors.groupingBy(s -> s, Collectors.counting()))
+            .entrySet()
+            .stream()
+            .max(Comparator.comparing(Map.Entry::getValue))
+            .orElseThrow(RuntimeException::new)
+            .getKey();
   }
 
   /**
