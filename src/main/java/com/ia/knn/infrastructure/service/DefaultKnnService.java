@@ -116,8 +116,8 @@ public class DefaultKnnService implements KnnService {
 
       for (int j = 0; j < yDivision; j++) {
         Element element = Element.builder()
-                .xValue(xIncrement)
-                .yValue(limits.getYMin() + j * hForY)
+                .x(xIncrement)
+                .y(limits.getYMin() + j * hForY)
                 .build();
         gridElements.add(element);
       }
@@ -134,17 +134,17 @@ public class DefaultKnnService implements KnnService {
    */
   private Limits getLimits(List<Element> elements) {
     double xMin = elements.stream()
-            .min(Comparator.comparing(Element::getXValue)).orElseThrow(RuntimeException::new)
-            .getXValue();
+            .min(Comparator.comparing(Element::getX)).orElseThrow(RuntimeException::new)
+            .getX();
     double yMin = elements.stream()
-            .min(Comparator.comparing(Element::getYValue)).orElseThrow(RuntimeException::new)
-            .getYValue();
+            .min(Comparator.comparing(Element::getX)).orElseThrow(RuntimeException::new)
+            .getY();
     double xMax = elements.stream()
-            .max(Comparator.comparing(Element::getXValue)).orElseThrow(RuntimeException::new)
-            .getXValue();
+            .max(Comparator.comparing(Element::getX)).orElseThrow(RuntimeException::new)
+            .getX();
     double yMax = elements.stream()
-            .max(Comparator.comparing(Element::getYValue)).orElseThrow(RuntimeException::new)
-            .getYValue();
+            .max(Comparator.comparing(Element::getX)).orElseThrow(RuntimeException::new)
+            .getY();
 
     return Limits.builder()
             .xMin(xMin)

@@ -10,9 +10,9 @@ import lombok.Data;
 public class Element {
 
   @NotNull(message = "x axis value is mandatory")
-  private double xValue;
+  private double x;
   @NotNull(message = "y axis value is mandatory")
-  private double yValue;
+  private double y;
   @NotNull(message = "The final clase is mandatory")
   private String clase;
 

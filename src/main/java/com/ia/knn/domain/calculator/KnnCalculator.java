@@ -68,8 +68,8 @@ public class KnnCalculator {
    * @return The distance.
    */
   private double calculateDistances(Element elementI, Element elementJ) {
-    return sqrt(pow((elementI.getXValue() - elementJ.getXValue()), 2) +
-        pow(elementI.getYValue() - elementJ.getYValue(), 2));
+    return sqrt(pow((elementI.getX() - elementJ.getX()), 2) +
+        pow(elementI.getY() - elementJ.getY(), 2));
   }
 
 }
