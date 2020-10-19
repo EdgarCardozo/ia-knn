@@ -137,13 +137,13 @@ public class DefaultKnnService implements KnnService {
             .min(Comparator.comparing(Element::getXValue)).orElseThrow(RuntimeException::new)
             .getXValue();
     double yMin = elements.stream()
-            .min(Comparator.comparing(Element::getXValue)).orElseThrow(RuntimeException::new)
+            .min(Comparator.comparing(Element::getYValue)).orElseThrow(RuntimeException::new)
             .getYValue();
     double xMax = elements.stream()
             .max(Comparator.comparing(Element::getXValue)).orElseThrow(RuntimeException::new)
             .getXValue();
     double yMax = elements.stream()
-            .max(Comparator.comparing(Element::getXValue)).orElseThrow(RuntimeException::new)
+            .max(Comparator.comparing(Element::getYValue)).orElseThrow(RuntimeException::new)
             .getYValue();
 
     return Limits.builder()
