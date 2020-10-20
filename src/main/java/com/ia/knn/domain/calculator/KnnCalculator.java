@@ -21,7 +21,7 @@ public class KnnCalculator {
    * @param elementsList All the neighbours used to filter by distance.
    * @param element      Element to find its neighbours.
    * @param kValue       Number of neighbours.
-   * @return A list with the K-nearest neighbours.
+   * @return The best fit class as String.
    */
   public String calculateNeighbours(List<Element> elementsList, Element element, Integer kValue) {
     List<ElementDistance> elementDistance = elementsList.stream()

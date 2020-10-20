@@ -13,4 +13,5 @@ public class GridMapping {
 
     List<Element> gridElements;
     List<Element> testElements;
+    long kFactor;
 }

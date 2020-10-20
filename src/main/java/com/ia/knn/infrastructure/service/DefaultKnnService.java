@@ -70,7 +70,23 @@ public class DefaultKnnService implements KnnService {
     return GridMapping.builder()
             .gridElements(trainedGrid)
             .testElements(testElements)
+            .kFactor(validatePrediction(trainElements, testElements, kValue))
             .build();
+  }
+
+  /**
+   *  This method validates the accuracy of the prediction.
+   *
+   * @param trainElements The prediction of the algorithm.
+   * @param testElements The test set to validate the algorithm.
+   * @param kValue number of neighbours.
+   * @return The factor asserted_elements/number_of_test_elements
+   */
+  private long validatePrediction(List<Element> trainElements, List<Element> testElements, Integer kValue) {
+    long assertedTest =
+            testElements.parallelStream()
+            .filter(e -> knnCalculator.calculateNeighbours(trainElements, e, kValue).equals(e.getClase())).count();
+    return assertedTest / testElements.size();
   }
 
   /**
