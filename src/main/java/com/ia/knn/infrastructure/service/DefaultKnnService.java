@@ -142,7 +142,7 @@ public class DefaultKnnService implements KnnService {
     double xMax = elements.stream()
             .max(Comparator.comparing(Element::getX)).orElseThrow(RuntimeException::new)
             .getX();
-    double yMax = elements.stream()g
+    double yMax = elements.stream()
             .max(Comparator.comparing(Element::getY)).orElseThrow(RuntimeException::new)
             .getY();
 
