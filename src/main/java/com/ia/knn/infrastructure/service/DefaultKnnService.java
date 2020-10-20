@@ -111,10 +111,9 @@ public class DefaultKnnService implements KnnService {
     double hForX = (limits.getXMax() - limits.getXMin()) / xDivision;
     double hForY = (limits.getYMax() - limits.getYMin()) / yDivision;
 
-    for (int i = 0; i < xDivision; i++) {
+    for (int i = 0; i <= xDivision; i++) {
       double xIncrement = limits.getXMin() + i * hForX;
-
-      for (int j = 0; j < yDivision; j++) {
+      for (int j = 0; j <= yDivision; j++) {
         Element element = Element.builder()
                 .x(xIncrement)
                 .y(limits.getYMin() + j * hForY)
