@@ -70,7 +70,7 @@ public class DefaultKnnService implements KnnService {
     return GridMapping.builder()
             .gridElements(trainedGrid)
             .testElements(testElements)
-            .kFactor(validatePrediction(trainElements, testElements, kValue))
+            .kFactor(validateAlgorithm(trainedGrid, testElements, kValue))
             .build();
   }
 
@@ -82,10 +82,10 @@ public class DefaultKnnService implements KnnService {
    * @param kValue number of neighbours.
    * @return The factor asserted_elements/number_of_test_elements
    */
-  private long validatePrediction(List<Element> trainElements, List<Element> testElements, Integer kValue) {
-    long assertedTest =
-            testElements.parallelStream()
-            .filter(e -> knnCalculator.calculateNeighbours(trainElements, e, kValue).equals(e.getClase())).count();
+  private double validateAlgorithm(List<Element> trainElements, List<Element> testElements, Integer kValue) {
+    double assertedTest =
+            (double) testElements.stream()
+                    .filter(e -> knnCalculator.calculateNeighbours(trainElements, e, kValue).equals(e.getClase())).count();
     return assertedTest / testElements.size();
   }
 
