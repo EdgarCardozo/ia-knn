@@ -6,6 +6,7 @@ import com.ia.knn.infrastructure.dto.Element;
 import com.ia.knn.infrastructure.dto.GridMapping;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -82,11 +83,11 @@ public class DefaultKnnService implements KnnService {
    * @param kValue number of neighbours.
    * @return The factor asserted_elements/number_of_test_elements
    */
-  private double validateAlgorithm(List<Element> trainElements, List<Element> testElements, Integer kValue) {
+  private BigDecimal validateAlgorithm(List<Element> trainElements, List<Element> testElements, Integer kValue) {
     double assertedTest =
             (double) testElements.stream()
                     .filter(e -> knnCalculator.calculateNeighbours(trainElements, e, kValue).equals(e.getClase())).count();
-    return assertedTest / testElements.size();
+    return BigDecimal.valueOf(assertedTest / testElements.size());
   }
 
   /**
