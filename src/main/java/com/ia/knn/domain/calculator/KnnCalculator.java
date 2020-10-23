@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -53,9 +54,17 @@ public class KnnCalculator {
    * @return List of the first k elements.
    */
   private List<Element> getKFirstResults(List<ElementDistance> distances, Integer kValue) {
-    return distances.parallelStream()
-            .sorted(Comparator.comparing(ElementDistance::getDistance))
-            .limit(kValue)
+    List<ElementDistance> elementDistances = distances.stream()
+            .sorted(Comparator.comparing(ElementDistance::getDistance)).collect(Collectors.toList()).subList(0, kValue);
+    // This part check if the following neighbours has the same distance as the last one. If it have, then add to the list.
+    for (int i = kValue; i < distances.size(); i++) {
+      if (elementDistances.get(kValue - 1).getDistance() == (distances.get(kValue - 1).getDistance())) {
+        elementDistances.add(distances.get(i));
+      } else
+        break;
+    }
+
+    return distances.stream()
             .map(ElementDistance::getElement)
             .collect(Collectors.toList());
   }

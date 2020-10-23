@@ -71,7 +71,7 @@ public class DefaultKnnService implements KnnService {
     return GridMapping.builder()
             .gridElements(trainedGrid)
             .testElements(testElements)
-            .kFactor(validateAlgorithm(trainedGrid, testElements, kValue))
+            .kFactor(validateAlgorithm(trainElements, testElements, kValue))
             .build();
   }
 
@@ -86,7 +86,10 @@ public class DefaultKnnService implements KnnService {
   private BigDecimal validateAlgorithm(List<Element> trainElements, List<Element> testElements, Integer kValue) {
     double assertedTest =
             (double) testElements.stream()
-                    .filter(e -> knnCalculator.calculateNeighbours(trainElements, e, kValue).equals(e.getClase())).count();
+                    .filter(e ->
+                            knnCalculator.calculateNeighbours(trainElements, e, kValue)
+                            .equals(e.getClase()))
+                    .count();
     return BigDecimal.valueOf(assertedTest / testElements.size());
   }
 
