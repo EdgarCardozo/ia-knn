@@ -54,7 +54,8 @@ public class KnnCalculator {
    */
   private List<Element> getKFirstResults(List<ElementDistance> distances, Integer kValue) {
     List<ElementDistance> elementDistances = distances.stream()
-            .sorted(Comparator.comparing(ElementDistance::getDistance)).collect(Collectors.toList()).subList(0, kValue);
+            .sorted(Comparator.comparing(ElementDistance::getDistance))
+            .collect(Collectors.toList()).subList(0, kValue);
     // This part check if the following neighbours has the same distance as the last one. If it have, then add to the list.
     elementDistances.addAll(
             distances.stream()

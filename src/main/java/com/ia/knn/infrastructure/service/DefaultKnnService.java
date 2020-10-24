@@ -2,12 +2,14 @@ package com.ia.knn.infrastructure.service;
 
 import com.ia.knn.domain.calculator.KnnCalculator;
 import com.ia.knn.domain.utils.Limits;
+import com.ia.knn.infrastructure.dto.DataSet;
 import com.ia.knn.infrastructure.dto.Element;
 import com.ia.knn.infrastructure.dto.GridMapping;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class DefaultKnnService implements KnnService {
@@ -53,6 +55,26 @@ public class DefaultKnnService implements KnnService {
     return calculateGrid(dataSet, grid, kValue);
   }
 
+  public GridMapping drawGrid(DataSet dataSet, Integer kValue, Integer xDivision, Integer yDivision) {
+    Limits limits = getLimits(dataSet.getDataSet());
+    List<Element> grid = buildGrid(limits, xDivision, yDivision);
+    return calculateGrid(dataSet, grid, kValue);
+  }
+
+  private GridMapping calculateGrid(DataSet dataSet, List<Element> grid, Integer kValue) {
+    List<Element> trainElements = dataSet.getDataSet().stream()
+            .filter(element -> dataSet.getTestElements().contains(element))
+            .collect(Collectors.toList());
+    // Calculates grid with class type
+    List<Element> trainedGrid = trainGrid(grid, trainElements, kValue);
+
+    return GridMapping.builder()
+            .gridElements(trainedGrid)
+            .testElements(dataSet.getTestElements())
+            .kFactor(Collections.singletonList(validateAlgorithm(trainElements, trainElements, kValue)))
+            .build();
+  }
+
   private GridMapping calculateGrid(List<Element> dataSet, List<Element> grid, Integer kValue) {
     // Mix List
     Collections.shuffle(dataSet);
@@ -68,8 +90,16 @@ public class DefaultKnnService implements KnnService {
     return GridMapping.builder()
             .gridElements(trainedGrid)
             .testElements(testElements)
-            .kFactor(validateAlgorithm(trainElements, testElements, kValue))
+            .kFactor(buildAcurracies(trainElements, testElements))
             .build();
+  }
+
+  private List<BigDecimal> buildAcurracies(List<Element> trainElements, List<Element> testElements) {
+    List<BigDecimal> kFactors = new ArrayList<>();
+    for (int i = 1; i <= trainElements.size(); i++){
+      kFactors.add(validateAlgorithm(trainElements, testElements, i));
+    }
+    return kFactors;
   }
 
   /**

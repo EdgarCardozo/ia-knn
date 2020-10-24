@@ -1,5 +1,6 @@
 package com.ia.knn.infrastructure.controller;
 
+import com.ia.knn.infrastructure.dto.DataSet;
 import com.ia.knn.infrastructure.dto.Element;
 import com.ia.knn.infrastructure.dto.GridMapping;
 import com.ia.knn.infrastructure.service.KnnService;
@@ -45,6 +46,20 @@ public class KnnController {
   ) {
     return ResponseEntity.ok(knnService.buildGrid(
             gridElements,
+            kValue,
+            xDivision,
+            yDivision));
+  }
+
+  @PostMapping(value = "/draw-grid")
+  public ResponseEntity<GridMapping> drawGrid(
+          @RequestParam @Min(1) Integer kValue,
+          @RequestParam @Min(1) Integer xDivision,
+          @RequestParam @Min(1) Integer yDivision,
+          @RequestBody @NotNull DataSet grid
+  ) {
+    return ResponseEntity.ok(knnService.drawGrid(
+            grid,
             kValue,
             xDivision,
             yDivision));
