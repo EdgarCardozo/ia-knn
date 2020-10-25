@@ -55,34 +55,35 @@ public class DefaultKnnService implements KnnService {
     return calculateGrid(dataSet, grid, kValue);
   }
 
+  /**
+   * Grid drawer. This method receives a Data Set with the data set and de test elements to re-calculate the grid Mapping.
+   * @param dataSet
+   * @param kValue
+   * @param xDivision
+   * @param yDivision
+   * @return
+   */
   public GridMapping drawGrid(DataSet dataSet, Integer kValue, Integer xDivision, Integer yDivision) {
     Limits limits = getLimits(dataSet.getDataSet());
     List<Element> grid = buildGrid(limits, xDivision, yDivision);
     return calculateGrid(dataSet, grid, kValue);
   }
 
-  private GridMapping calculateGrid(DataSet dataSet, List<Element> grid, Integer kValue) {
-    List<Element> trainElements = dataSet.getDataSet().stream()
-            .filter(element -> !dataSet.getTestElements().contains(element))
-            .collect(Collectors.toList());
-    // Calculates grid with class type
-    List<Element> trainedGrid = trainGrid(grid, trainElements, kValue);
-
-    return GridMapping.builder()
-            .gridElements(trainedGrid)
-            .testElements(dataSet.getTestElements())
-            .kFactor(Collections.singletonList(validateAlgorithm(trainElements, dataSet.getTestElements(), kValue)))
-            .build();
-  }
-
-  private GridMapping calculateGrid(List<Element> dataSet, List<Element> grid, Integer kValue) {
+  /**
+   * Overload. Calculates the grid given a training elements, grid and K Value.
+   * @param trainingElements used to train new Grid.
+   * @param grid Grid with the elements to calculates its Class values.
+   * @param kValue number of neighbours.
+   * @return GridMapping.
+   */
+  private GridMapping calculateGrid(List<Element> trainingElements, List<Element> grid, Integer kValue) {
     // Mix List
-    Collections.shuffle(dataSet);
+    Collections.shuffle(trainingElements);
 
     // Divides into training elements and testing elements
-    int splitIndex = (int) (dataSet.size() * PERCENTAGE);
-    List<Element> trainElements = dataSet.subList(0, splitIndex);
-    List<Element> testElements = dataSet.subList(splitIndex, dataSet.size());
+    int splitIndex = (int) (trainingElements.size() * PERCENTAGE);
+    List<Element> trainElements = trainingElements.subList(0, splitIndex);
+    List<Element> testElements = trainingElements.subList(splitIndex, trainingElements.size());
 
     // Calculates grid with class type
     List<Element> trainedGrid = trainGrid(grid, trainElements, kValue);
@@ -94,10 +95,38 @@ public class DefaultKnnService implements KnnService {
             .build();
   }
 
+  /**
+   * Overload. Calculates the grid given a Data Set, grid and K Value.
+   * @param dataSet used to train new Grid.
+   * @param grid Grid with the elements to calculates its Class values.
+   * @param kValue number of neighbours.
+   * @return GridMapping.
+   */
+  private GridMapping calculateGrid(DataSet dataSet, List<Element> grid, Integer kValue) {
+    List<Element> trainElements = dataSet.getDataSet().stream()
+            .filter(element -> !dataSet.getTestElements().contains(element))
+            .collect(Collectors.toList());
+    // Calculates grid with class type
+    List<Element> trainedGrid = trainGrid(grid, trainElements, kValue);
+
+    return GridMapping.builder()
+            .gridElements(trainedGrid)
+            .testElements(dataSet.getTestElements())
+            .kFactor(Collections.singletonList(calculateAccuracy(trainElements, dataSet.getTestElements(), kValue)))
+            .build();
+  }
+
+  /**
+   * The aim of this method is to calculate the accuracies
+   * for the test elements with K neighbours from 1 to the size of the training elements;
+   * @param trainElements Training elements.
+   * @param testElements Test elements.
+   * @return List of Accuracies.
+   */
   private List<BigDecimal> buildAccuracies(List<Element> trainElements, List<Element> testElements) {
     List<BigDecimal> kFactors = new ArrayList<>();
     for (int i = 1; i <= trainElements.size(); i++){
-      kFactors.add(validateAlgorithm(trainElements, testElements, i));
+      kFactors.add(calculateAccuracy(trainElements, testElements, i));
     }
     return kFactors;
   }
@@ -110,7 +139,7 @@ public class DefaultKnnService implements KnnService {
    * @param kValue number of neighbours.
    * @return The factor asserted_elements/number_of_test_elements
    */
-  private BigDecimal validateAlgorithm(List<Element> trainElements, List<Element> testElements, Integer kValue) {
+  private BigDecimal calculateAccuracy(List<Element> trainElements, List<Element> testElements, Integer kValue) {
     double assertedTest =
             (double) testElements.stream()
                     .filter(e ->
