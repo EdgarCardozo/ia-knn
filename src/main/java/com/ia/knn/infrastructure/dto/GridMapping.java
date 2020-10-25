@@ -17,5 +17,6 @@ public class GridMapping implements Serializable {
 
     List<Element> gridElements;
     List<Element> testElements;
+    List<Element> trainingElements;
     List<BigDecimal> kFactor;
 }
