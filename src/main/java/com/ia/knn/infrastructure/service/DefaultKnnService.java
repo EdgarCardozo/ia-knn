@@ -63,7 +63,7 @@ public class DefaultKnnService implements KnnService {
 
   private GridMapping calculateGrid(DataSet dataSet, List<Element> grid, Integer kValue) {
     List<Element> trainElements = dataSet.getDataSet().stream()
-            .filter(element -> dataSet.getTestElements().contains(element))
+            .filter(element -> !dataSet.getTestElements().contains(element))
             .collect(Collectors.toList());
     // Calculates grid with class type
     List<Element> trainedGrid = trainGrid(grid, trainElements, kValue);
@@ -71,7 +71,7 @@ public class DefaultKnnService implements KnnService {
     return GridMapping.builder()
             .gridElements(trainedGrid)
             .testElements(dataSet.getTestElements())
-            .kFactor(Collections.singletonList(validateAlgorithm(trainElements, trainElements, kValue)))
+            .kFactor(Collections.singletonList(validateAlgorithm(trainElements, dataSet.getTestElements(), kValue)))
             .build();
   }
 
@@ -90,11 +90,11 @@ public class DefaultKnnService implements KnnService {
     return GridMapping.builder()
             .gridElements(trainedGrid)
             .testElements(testElements)
-            .kFactor(buildAcurracies(trainElements, testElements))
+            .kFactor(buildAccuracies(trainElements, testElements))
             .build();
   }
 
-  private List<BigDecimal> buildAcurracies(List<Element> trainElements, List<Element> testElements) {
+  private List<BigDecimal> buildAccuracies(List<Element> trainElements, List<Element> testElements) {
     List<BigDecimal> kFactors = new ArrayList<>();
     for (int i = 1; i <= trainElements.size(); i++){
       kFactors.add(validateAlgorithm(trainElements, testElements, i));
