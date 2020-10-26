@@ -113,7 +113,7 @@ public class DefaultKnnService implements KnnService {
     return GridMapping.builder()
             .gridElements(trainedGrid)
             .testElements(dataSet.getTestElements())
-            .testElements(trainElements)
+            .trainingElements(trainElements)
             .kFactor(Collections.singletonList(calculateAccuracy(trainElements, dataSet.getTestElements(), kValue)))
             .build();
   }
