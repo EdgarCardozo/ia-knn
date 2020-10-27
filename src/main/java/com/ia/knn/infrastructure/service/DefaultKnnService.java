@@ -71,19 +71,19 @@ public class DefaultKnnService implements KnnService {
 
   /**
    * Overload. Calculates the grid given a training elements, grid and K Value.
-   * @param trainingElements used to train new Grid.
+   * @param dataset used to train new Grid.
    * @param grid Grid with the elements to calculates its Class values.
    * @param kValue number of neighbours.
    * @return GridMapping.
    */
-  private GridMapping calculateGrid(List<Element> trainingElements, List<Element> grid, Integer kValue) {
+  private GridMapping calculateGrid(List<Element> dataset, List<Element> grid, Integer kValue) {
     // Mix List
-    Collections.shuffle(trainingElements);
+    Collections.shuffle(dataset);
 
     // Divides into training elements and testing elements
-    int splitIndex = (int) (trainingElements.size() * PERCENTAGE);
-    List<Element> trainElements = trainingElements.subList(0, splitIndex);
-    List<Element> testElements = trainingElements.subList(splitIndex, trainingElements.size());
+    int splitIndex = (int) (dataset.size() * PERCENTAGE);
+    List<Element> trainElements = dataset.subList(0, splitIndex);
+    List<Element> testElements = dataset.subList(splitIndex, dataset.size());
 
     // Calculates grid with class type
     List<Element> trainedGrid = trainGrid(grid, trainElements, kValue);
@@ -91,7 +91,7 @@ public class DefaultKnnService implements KnnService {
     return GridMapping.builder()
             .gridElements(trainedGrid)
             .testElements(testElements)
-            .trainingElements(trainingElements)
+            .trainingElements(trainElements)
             .kFactor(buildAccuracies(trainElements, testElements))
             .build();
   }
