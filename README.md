@@ -6,7 +6,7 @@ It also calculates the Accuracy of this trial, for the k given and for the rest 
 
 ## Swagger Documentation
 As it is deployed on heroku, just go to this link to get more info.
-https://ia-knn.herokuapp.com/api/ia-knn/v1/swagger-ui.html
+https://knn2020-backend.herokuapp.com/api/ia-knn/v1/swagger-ui.html
 
 ## Run Locally
 

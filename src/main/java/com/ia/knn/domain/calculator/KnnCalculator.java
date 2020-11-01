@@ -34,6 +34,11 @@ public class KnnCalculator {
     return selectBestFitClass(getKFirstResults(elementDistance, kValue));
   }
 
+  /** This method returns the most frequent class in a List of Elements.
+   *
+   * @param kFirstResults Receives a list of K first Elemens.
+   * @return The most frequent class.
+   */
   private String selectBestFitClass(List<Element> kFirstResults) {
     List<String> classes = kFirstResults.stream().map(Element::getClase).collect(Collectors.toList());
     return classes.stream()
