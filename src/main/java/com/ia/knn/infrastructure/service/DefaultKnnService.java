@@ -8,8 +8,12 @@ import com.ia.knn.infrastructure.dto.GridMapping;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class DefaultKnnService implements KnnService {
@@ -28,14 +32,15 @@ public class DefaultKnnService implements KnnService {
    *  Default grid Knn Calculator.
    * @param dataSet complete data set to calculate the grid.
    * @param kValue numbers of neighbours to consider.
+   * @param trainingSize
    * @return GridMapping that is used to build the graphic.
    */
-  public GridMapping buildGrid(List<Element> dataSet, Integer kValue) {
+  public GridMapping buildGrid(List<Element> dataSet, Integer kValue, Integer trainingSize) {
     // Obtains grid limits
     Limits limits = getLimits(dataSet);
     List<Element> grid = buildGrid(limits);
 
-    return calculateGrid(dataSet, grid, kValue);
+    return calculateGrid(dataSet, grid, kValue, trainingSize);
   }
 
   /** Overload.
@@ -47,12 +52,12 @@ public class DefaultKnnService implements KnnService {
    * @param yDivision Number of division on y axis.
    * @return GridMapping that is used to build the graphic.
    */
-  public GridMapping buildGrid(List<Element> dataSet, Integer kValue, Integer xDivision, Integer yDivision) {
+  public GridMapping buildGrid(List<Element> dataSet, Integer kValue, Integer xDivision, Integer yDivision, Integer trainingSize) {
     // Obtains grid limits
     Limits limits = getLimits(dataSet);
     List<Element> grid = buildGrid(limits, xDivision, yDivision);
 
-    return calculateGrid(dataSet, grid, kValue);
+    return calculateGrid(dataSet, grid, kValue, trainingSize);
   }
 
   /**
@@ -74,14 +79,15 @@ public class DefaultKnnService implements KnnService {
    * @param dataset used to train new Grid.
    * @param grid Grid with the elements to calculates its Class values.
    * @param kValue number of neighbours.
+   * @param trainingSize
    * @return GridMapping.
    */
-  private GridMapping calculateGrid(List<Element> dataset, List<Element> grid, Integer kValue) {
+  private GridMapping calculateGrid(List<Element> dataset, List<Element> grid, Integer kValue, Integer trainingSize) {
     // Mix List
     Collections.shuffle(dataset);
 
     // Divides into training elements and testing elements
-    int splitIndex = (int) (dataset.size() * PERCENTAGE);
+    int splitIndex = ((dataset.size() * trainingSize)/100);
     List<Element> trainElements = dataset.subList(0, splitIndex);
     List<Element> testElements = dataset.subList(splitIndex, dataset.size());
 
@@ -189,17 +195,19 @@ public class DefaultKnnService implements KnnService {
     double hForX = (limits.getXMax() - limits.getXMin()) / xDivision;
     double hForY = (limits.getYMax() - limits.getYMin()) / yDivision;
 
-    for (int i = 0; i <= xDivision; i++) {
-      double xIncrement = limits.getXMin() + i * hForX;
-      for (int j = 0; j <= yDivision; j++) {
-        Element element = Element.builder()
-                .x(xIncrement)
-                .y(limits.getYMin() + j * hForY)
-                .build();
-        gridElements.add(element);
-      }
+    IntStream.rangeClosed(0, xDivision)
+            .forEach(i -> {
+              double xIncrement = limits.getXMin() + i * hForX;
+              IntStream.rangeClosed(0, yDivision)
+                      .forEach(j -> {
+                        Element element = Element.builder()
+                                .x(xIncrement)
+                                .y(limits.getYMin() + j * hForY)
+                                .build();
+                        gridElements.add(element);
+                      });
+            });
 
-    }
     return gridElements;
   }
 

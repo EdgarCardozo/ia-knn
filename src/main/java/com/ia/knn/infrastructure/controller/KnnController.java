@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.ConstraintViolationException;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
@@ -30,11 +31,13 @@ public class KnnController {
   @PostMapping(value = "/calculate-grid/default")
   public ResponseEntity<GridMapping> calculateGrid(
           @RequestParam @Min(1) Integer kValue,
+          @RequestParam @Max(99) @Min(1) Integer trainingSize,
           @RequestBody @NotNull List<Element> gridElements
   ) {
     return ResponseEntity.ok(knnService.buildGrid(
             gridElements,
-            kValue));
+            kValue,
+            trainingSize));
   }
 
   @PostMapping(value = "/calculate-grid")
@@ -42,13 +45,15 @@ public class KnnController {
           @RequestParam @Min(1) Integer kValue,
           @RequestParam @Min(1) Integer xDivision,
           @RequestParam @Min(1) Integer yDivision,
+          @RequestParam @Max(99) @Min(1) Integer trainingSize,
           @RequestBody @NotNull List<Element> gridElements
   ) {
     return ResponseEntity.ok(knnService.buildGrid(
             gridElements,
             kValue,
             xDivision,
-            yDivision));
+            yDivision,
+            trainingSize));
   }
 
   @PostMapping(value = "/draw-grid")
@@ -62,7 +67,8 @@ public class KnnController {
             grid,
             kValue,
             xDivision,
-            yDivision));
+            yDivision
+    ));
   }
 
   @ExceptionHandler(ConstraintViolationException.class)

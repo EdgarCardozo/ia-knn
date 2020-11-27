@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface KnnService {
 
-  GridMapping buildGrid(List<Element> elements, Integer kValue);
+  GridMapping buildGrid(List<Element> elements, Integer kValue, Integer trainingSize);
 
-  GridMapping buildGrid(List<Element> elements, Integer kValue, Integer xDivision, Integer yDivision);
+  GridMapping buildGrid(List<Element> elements, Integer kValue, Integer xDivision, Integer yDivision, Integer trainingSize);
 
   GridMapping drawGrid(DataSet grid, Integer kValue, Integer xDivision, Integer yDivision);
 }
