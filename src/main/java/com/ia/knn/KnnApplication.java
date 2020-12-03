@@ -1,6 +1,5 @@
 package com.ia.knn;
 
-import com.ia.knn.infrastructure.service.Result;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
